@@ -1,29 +1,40 @@
 import './pages/index.css';
+import {initialCards} from "./scripts/cards.js";
+import {createCard, deleteCard} from "./components/card.js";
+import {openModal, addListenerFunction} from "./components/modal.js";
 
-const cardTemplate = document.querySelector('#card-template').content;
+const placesList = document.querySelector('.places__list');
+const popupEdit = document.querySelector('.popup_type_edit');
+const popupNewCard = document.querySelector('.popup_type_new-card');
+const popupImage = document.querySelector('.popup_type_image');
 
-function createCard(cardData, deleteCard) {
-    const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+// Кнопки для открытия попапов
+const editButton = document.querySelector('.profile__edit-button');
+const addButton = document.querySelector('.profile__add-button');
 
-    const cardImage = cardElement.querySelector('.card__image');
-    const cardDeleteButton = cardElement.querySelector('.card__delete-button');
-    const cardTitle = cardElement.querySelector('.card__title');
+const popupImageElement = popupImage.querySelector('.popup__image');
+const popupCaptionElement = popupImage.querySelector('.popup__caption');
 
-    cardImage.alt = cardData.name;
-    cardImage.src = cardData.link;
-    cardTitle.textContent = cardData.name;
-
-    cardDeleteButton.addEventListener('click', () => deleteCard(cardElement));
-    
-    return cardElement;
+// Открытие попапа с изображениями
+function openImageModal(link, name) {
+    popupImageElement.src = link;
+    popupImageElement.alt = name;
+    popupCaptionElement.textContent = name;
+    openModal(popupImage);
 }
 
-function deleteCard(cardElement) {
-    cardElement.remove();
-}
-
-const placesList = document.querySelector('.places__list'); 
-
+// Вывод карточек на страницу
 initialCards.forEach((element) => {
-    placesList.append(createCard(element, deleteCard));
+    placesList.append(createCard(element, deleteCard, openImageModal));
 });
+
+// Открытие попапов по клику
+editButton.addEventListener('click', () => openModal(popupEdit));
+addButton.addEventListener('click', () => openModal(popupNewCard));
+
+
+
+// Добавление слушателей для закрытия попапов
+addListenerFunction(popupEdit);
+addListenerFunction(popupNewCard);
+addListenerFunction(popupImage);
