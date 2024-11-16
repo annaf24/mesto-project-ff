@@ -17,16 +17,3 @@ export const closeModal= (modal) => {
     modal.classList.remove('popup_is-opened');
     document.removeEventListener("keyup", handleEscKeyUp)
 };
-
-// Функция добавления обработчиков для закрытия модального окна
-export const addListenerFunction = (elementModal) => {
-    const closeButton = elementModal.querySelector('.popup__close');
-    closeButton.addEventListener("click", () => {
-        closeModal(elementModal)
-});
-
-elementModal.addEventListener("mousedown", (event) => {
-    if (event.target === elementModal) {
-        closeModal(elementModal);
-}});
-}

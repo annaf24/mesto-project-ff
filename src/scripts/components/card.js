@@ -29,3 +29,8 @@ const cardTemplate = document.querySelector('#card-template').content;
 export function deleteCard(cardElement) {
     cardElement.remove();
 }
+
+// Функция лайка карточки
+export function likeCard(likeButtin) {
+    likeButtin.classList.toggle('card__like-button_is-active');
+}
