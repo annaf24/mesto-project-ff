@@ -2,6 +2,7 @@ import './pages/index.css';
 import {initialCards} from "./scripts/components/cards.js";
 import {createCard, deleteCard, likeCard} from "./scripts/components/card.js";
 import {openModal, closeModal} from "./scripts/components/modal.js";
+import {enableValidation, clearValidation} from './scripts/components/validation.js';
 
 //DOM-элементы
 const placesList = document.querySelector('.places__list');
@@ -20,6 +21,20 @@ const imagePopupCaptionElement = popupImage.querySelector('.popup__caption');
 const newCardForm = popupNewCard.querySelector('.popup__form');
 const placeNameInput = newCardForm.querySelector('.popup__input_type_card-name');
 const placeLinkInput = newCardForm.querySelector('.popup__input_type_url');
+
+// const formElement = document.querySelector('.popup__form');
+// const inputName = document.querySelector('.popup__input_type_name');
+// const inputDescription = document.querySelector('.popup__input_type_description');
+// const buttonSubmit = document.querySelector('.popup__button');
+
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+}; 
 
 // Функция добавления обработчиков для закрытия модального окна
 const addListenerFunction = (elementModal) => {
@@ -116,3 +131,5 @@ newCardForm.addEventListener('submit', handleNewCardSubmit);
 addListenerFunction(popupEdit);
 addListenerFunction(popupNewCard);
 addListenerFunction(popupImage);
+
+enableValidation(validationConfig);
