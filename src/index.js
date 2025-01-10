@@ -1,9 +1,8 @@
 import './pages/index.css';
-//import {initialCards} from "./scripts/components/cards.js";
 import {createCard, deleteCard, likeCard} from "./scripts/components/card.js";
 import {openModal, closeModal} from "./scripts/components/modal.js";
 import {enableValidation, clearValidation} from './scripts/components/validation.js';
-import {getUserInfo, getInitialCardsRequest, updateProfileInfo, createNewCard} from './scripts/components/api.js'
+import {getUserInfo, getInitialCardsRequest, updateProfileInfo, createNewCard, updateAvatar} from './scripts/components/api.js'
 
 //DOM-элементы
 const placesList = document.querySelector('.places__list');
@@ -14,7 +13,6 @@ const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image');
 const profileName = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
-const profileImage = document.querySelector('.profile__image')
 const editProfileFormElement = popupEdit.querySelector('.popup__form');
 const nameInput = editProfileFormElement.querySelector('.popup__input_type_name');
 const jobInput = editProfileFormElement.querySelector('.popup__input_type_description');
@@ -25,11 +23,12 @@ const imagePopupCaptionElement = popupImage.querySelector('.popup__caption');
 const newCardForm = popupNewCard.querySelector('.popup__form');
 const placeNameInput = newCardForm.querySelector('.popup__input_type_card-name');
 const placeLinkInput = newCardForm.querySelector('.popup__input_type_url');
-// const popupAvatar = document.querySelector('.')
-// const buttonSubmit = document.querySelector('.popup__button');
+const popupEditAvatar = document.querySelector('.popup_type_avatar');
+const editAvatarForm = document.querySelector('.popup__form[name="edit-avatar"]');
+const profileImage = document.querySelector('.profile__image');
+const avatarUrlInput = editAvatarForm.querySelector('.popup__input_type_avatar')
 
 let myId = null;
-
 
 // Настройка параметров валидации
 const validationConfig = {
@@ -40,6 +39,12 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
 };
+
+// Информирование пользователя о процессе загрузки
+const loading = {
+    start: btn => btn.textContent = 'Сохранение...',
+    stop: btn => btn.textContent = 'Сохранить'
+}
 
 // Функция добавления обработчиков для закрытия модального окна
 const addListenerFunction = (elementModal) => {
@@ -62,20 +67,12 @@ function openImageModal(link, name) {
     openModal(popupImage);
 }
 
-// // Открытие попапов по клику РАБОТАЕТ БЕЗ НИХ
-// editButton.addEventListener('click', () => openModal(popupEdit));
-// addButton.addEventListener('click', () => openModal(popupNewCard));
-
 // ФОРМА РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О СЕБЕ
-
 
 // Обработчик «отправки» формы
 function handleProfileFormSubmit(evt) {
+    loading.start(evt.submitter);
     evt.preventDefault();
-
-    // Получите значение полей
-    // const nameValue = nameInput.value;
-    // const jobValue = jobInput.value;
 
     const newUserData = {
         name: nameInput.value,
@@ -89,23 +86,22 @@ function handleProfileFormSubmit(evt) {
         profileJob.textContent = newUserData.about;
         closeModal(popupEdit);
     })
-    .catch(err => console.log(err)) 
+    .catch((err) => console.log(err))
+    .finally (() => {
+        loading.stop(evt.submitter)}
+    );
 }
 
 // Обработчик события клика на кнопку редактирования профиля
 editButton.addEventListener('click', () => {
-    // Заполнение полей формы текущими значениями со страницы
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
     // clearValidation(popupEditForm, validationConfig);
-    // Открытие модального окно редактирования
     openModal(popupEdit);
 });
 
 // Обработчик события “submit” - «отправка»
 editProfileFormElement.addEventListener('submit', handleProfileFormSubmit);
-
-
 
 // ФОРМА ДОБАВЛЕНИЕ КАРТОЧЕК
 
@@ -117,6 +113,7 @@ addButton.addEventListener('click', () => {
 });
 
 function handleNewCardSubmit(evt) {
+    loading.start(evt.submitter);
     evt.preventDefault();
 
     // Получение значений полей
@@ -136,7 +133,33 @@ function handleNewCardSubmit(evt) {
         newCardForm.reset();
     })
     .catch (err => console.error(err))
+    .finally (() => {
+        loading.stop(evt.submitter)}
+    );
 }
+
+// ИЗМЕНЕНИЕ АВАТАРКИ
+
+// Установка слушателя клика по аватарке
+profileImage.addEventListener('click', () => {
+	editAvatarForm.reset();
+	// clearValidation(editAvatarForm, validationConfig);
+	openModal(popupEditAvatar);
+})
+
+function handleAvatarSubmit(evt) {
+    evt.preventDefault();
+    const avatarUrl = avatarUrlInput.value;
+    updateAvatar(avatarUrl)
+    .then((avatar) => {
+        profileImage.style.backgroundImage = `url(${avatar.avatar})`;
+        editAvatarForm.reset();
+        closeModal(popupEditAvatar);
+    })
+    .catch(err => console.log(err));
+}
+
+editAvatarForm.addEventListener('submit', handleAvatarSubmit);
 
 //ПОСМОТРЕТЬ ЕЩЕ РАЗ
 newCardForm.addEventListener('submit', handleNewCardSubmit);

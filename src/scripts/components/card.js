@@ -23,12 +23,6 @@ const cardTemplate = document.querySelector('#card-template').content;
     cardImage.addEventListener('click', () => handleImageClick(cardData.link, cardData.name));
 
     // // Обработчик клика для удаления карточки
-    // cardDeleteButton.addEventListener('click', () => deleteCard(cardElement, cardData._id));
-    
-    // const userLiked = cardData.likes.some(like => like._id === myId);
-    // // if (userLiked) {
-    // //     cardLikeButton.classList.add('card__like-button_is-active');
-    // // }
     console.log(cardData.owner._id, myId);
     if (cardData.owner._id !== myId) {
         cardDeleteButton.remove();
