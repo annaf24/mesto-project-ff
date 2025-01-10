@@ -3,11 +3,13 @@ import './pages/index.css';
 import {createCard, deleteCard, likeCard} from "./scripts/components/card.js";
 import {openModal, closeModal} from "./scripts/components/modal.js";
 import {enableValidation, clearValidation} from './scripts/components/validation.js';
-import {getUserInfo, getInitialCardsRequest, createNewCard} from './scripts/components/api.js'
+import {getUserInfo, getInitialCardsRequest, updateProfileInfo, createNewCard} from './scripts/components/api.js'
 
 //DOM-элементы
 const placesList = document.querySelector('.places__list');
 const popupEdit = document.querySelector('.popup_type_edit');
+const popupEditForm = document.querySelector('.popup__form[name="edit-profile"]')
+const popupNewCardForm = document.querySelector('.popup__form[name="new-place"]')
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image');
 const profileName = document.querySelector('.profile__title');
@@ -64,38 +66,48 @@ function openImageModal(link, name) {
 // editButton.addEventListener('click', () => openModal(popupEdit));
 // addButton.addEventListener('click', () => openModal(popupNewCard));
 
-// // ФОРМА РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О СЕБЕ
+// ФОРМА РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О СЕБЕ
 
-// // Обработчик «отправки» формы
-// function handleProfileFormSubmit(evt) {
-//     evt.preventDefault();
 
-//     // Получите значение полей
-//     const nameValue = nameInput.value;
-//     const jobValue = jobInput.value;
+// Обработчик «отправки» формы
+function handleProfileFormSubmit(evt) {
+    evt.preventDefault();
 
-//     // Вставьте новых значений
-//     profileName.textContent = nameValue;
-//     profileJob.textContent = jobValue;
+    // Получите значение полей
+    // const nameValue = nameInput.value;
+    // const jobValue = jobInput.value;
 
-//     closeModal(popupEdit);
-// }
+    const newUserData = {
+        name: nameInput.value,
+        about: jobInput.value
+    };
+
+    updateProfileInfo(newUserData)
+    .then((userData) => {
+        console.log(userData);
+        profileName.textContent = newUserData.name;
+        profileJob.textContent = newUserData.about;
+        closeModal(popupEdit);
+    })
+    .catch(err => console.log(err)) 
+}
 
 // Обработчик события клика на кнопку редактирования профиля
 editButton.addEventListener('click', () => {
     // Заполнение полей формы текущими значениями со страницы
     nameInput.value = profileName.textContent;
     jobInput.value = profileJob.textContent;
-    //clearValidation(popupEdit, validationConfig);
+    // clearValidation(popupEditForm, validationConfig);
     // Открытие модального окно редактирования
     openModal(popupEdit);
 });
 
-// // Обработчик события “submit” - «отправка»
-// editProfileFormElement.addEventListener('submit', handleProfileFormSubmit);
+// Обработчик события “submit” - «отправка»
+editProfileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 
-// // ФОРМА ДОБАВЛЕНИЕ КАРТОЧЕК
+
+// ФОРМА ДОБАВЛЕНИЕ КАРТОЧЕК
 
 // Очистка полей формы при открытии
 addButton.addEventListener('click', () => {
@@ -104,7 +116,6 @@ addButton.addEventListener('click', () => {
     openModal(popupNewCard);
 });
 
-// Обработчик добавления новой карточки
 function handleNewCardSubmit(evt) {
     evt.preventDefault();
 
@@ -114,10 +125,11 @@ function handleNewCardSubmit(evt) {
         link: placeLinkInput.value
     };
 
-    createNewCard(cardData.name, cardData.link)
+    createNewCard(cardData)
     .then ((card) => {
         // Создание новой карточки и добавление её в начало контейнера
-        const newCard = createCard(card._id, cardData, deleteCard, openImageModal, likeCard);
+        console.log(card);
+        const newCard = createCard(card, deleteCard, openImageModal, likeCard, myId);
         placesList.prepend(newCard); // Добавляем карточку в начало списка
         // Закрытие попапа после добавления, очищение полей формы
         closeModal(popupNewCard);
@@ -126,7 +138,8 @@ function handleNewCardSubmit(evt) {
     .catch (err => console.error(err))
 }
 
-// newCardForm.addEventListener('submit', handleNewCardSubmit);
+//ПОСМОТРЕТЬ ЕЩЕ РАЗ
+newCardForm.addEventListener('submit', handleNewCardSubmit);
 
 Promise.all([getUserInfo(), getInitialCardsRequest()])
   .then(([user, cards])=>{
@@ -150,6 +163,8 @@ Promise.all([getUserInfo(), getInitialCardsRequest()])
   .catch((err) => {
     console.log('Ошибка. Запрос не выполнен: ', err);
 })
+
+
 
 // Добавление слушателей для закрытия попапов
 addListenerFunction(popupEdit);

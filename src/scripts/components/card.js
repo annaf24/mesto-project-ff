@@ -1,4 +1,4 @@
-import {deleteCardAPI, putLikeAPI} from "./api";
+import {deleteCardAPI, deleteLikeAPI, putLikeAPI} from "./api";
 
 const cardTemplate = document.querySelector('#card-template').content;
 
@@ -12,6 +12,8 @@ const cardTemplate = document.querySelector('#card-template').content;
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const likesCount = cardElement.querySelector('.card__like-count');
 
+    console.log(cardData);
+
     cardImage.alt = cardData.name;
     cardImage.src = cardData.link;
     cardTitle.textContent = cardData.name;
@@ -20,14 +22,14 @@ const cardTemplate = document.querySelector('#card-template').content;
     //Обработчик клика на изображение карточки
     cardImage.addEventListener('click', () => handleImageClick(cardData.link, cardData.name));
 
-    // Обработчик клика для удаления карточки
-    cardDeleteButton.addEventListener('click', () => deleteCard(cardElement));
+    // // Обработчик клика для удаления карточки
+    // cardDeleteButton.addEventListener('click', () => deleteCard(cardElement, cardData._id));
     
-    const userLiked = cardData.likes.some(like => like._id === myId);
-    if (userLiked) {
-        cardLikeButton.classList.add('card__like-button_is-active');
-    }
-
+    // const userLiked = cardData.likes.some(like => like._id === myId);
+    // // if (userLiked) {
+    // //     cardLikeButton.classList.add('card__like-button_is-active');
+    // // }
+    console.log(cardData.owner._id, myId);
     if (cardData.owner._id !== myId) {
         cardDeleteButton.remove();
     } else {
@@ -54,7 +56,8 @@ export function deleteCard(cardElement, cardID) {
 // Функция лайка карточки
 export function likeCard(cardLikeButton, cardID, likesCount) {
     const isLiked = cardLikeButton.classList.contains('card__like-button_is-active');
-    putLikeAPI(cardID, isLiked) 
+    if (isLiked) {
+        deleteLikeAPI(cardID) 
     .then((likedCard) => {
         cardLikeButton.classList.toggle('card__like-button_is-active')
         likesCount.textContent = likedCard.likes.length
@@ -62,5 +65,16 @@ export function likeCard(cardLikeButton, cardID, likesCount) {
     .catch(err => {
         console.log(`Ошибка при установке лайка: ${err}`)
     })
+    } else {
+        putLikeAPI(cardID) 
+    .then((likedCard) => {
+        cardLikeButton.classList.toggle('card__like-button_is-active')
+        likesCount.textContent = likedCard.likes.length
+    })
+    .catch(err => {
+        console.log(`Ошибка при установке лайка: ${err}`)
+    })
+    }
+    
 }
     

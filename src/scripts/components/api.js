@@ -51,6 +51,7 @@ export const updateProfileInfo = (data) => {
 
 // Добавление новой карточки (POST)
 export const createNewCard = (cardData) => {
+    console.log(cardData);
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
         headers: config.headers,
@@ -94,5 +95,5 @@ export const deleteCardAPI = (cardId) => {
       method: "DELETE",
       headers: config.headers,
     })
-    .then(handleResponse)
+    .then(getResponse)
 }
