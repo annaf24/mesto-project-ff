@@ -67,8 +67,23 @@
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
       <form class="popup__form" name="new-place">
-        <input type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required>
-        <input type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
+        <input id="popup__input_type_card-name"
+        type="text"
+        name="place-name"
+        class="popup__input popup__input_type_card-name"
+        placeholder="Название"
+        minlength="2" maxlength="30"
+        pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+        required>
+        <span class="popup__input_type_card-name-error popup__input-error"></span>
+        <input id="popup__input_type_url"
+        type="url" name="link"
+        class="popup__input popup__input_type_url"
+        placeholder="Ссылка на картинку"
+        data-error-message="Введите адрес сайта"
+        required>
+        <span class="popup__input_type_url-error popup__input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -87,9 +102,11 @@
     <img class="card__image" src="" alt="" />
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
-      <h2 class="card__title">
-      </h2>
-      <button type="button" class="card__like-button"></button>
+      <h2 class="card__title"></h2>
+      <div class="card__like">
+        <button type="button" class="card__like-button"></button>
+        <span class="card__like-count"></span>
+      </div> 
     </div>
   </li>
 </template>
