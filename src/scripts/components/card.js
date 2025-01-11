@@ -12,8 +12,6 @@ const cardTemplate = document.querySelector('#card-template').content;
     const cardLikeButton = cardElement.querySelector('.card__like-button');
     const likesCount = cardElement.querySelector('.card__like-count');
 
-    console.log(cardData);
-
     cardImage.alt = cardData.name;
     cardImage.src = cardData.link;
     cardTitle.textContent = cardData.name;
@@ -21,9 +19,7 @@ const cardTemplate = document.querySelector('#card-template').content;
 
     //Обработчик клика на изображение карточки
     cardImage.addEventListener('click', () => handleImageClick(cardData.link, cardData.name));
-
-    // // Обработчик клика для удаления карточки
-    console.log(cardData.owner._id, myId);
+    
     if (cardData.owner._id !== myId) {
         cardDeleteButton.remove();
     } else {
@@ -68,7 +64,6 @@ export function likeCard(cardLikeButton, cardID, likesCount) {
     .catch(err => {
         console.log(`Ошибка при установке лайка: ${err}`)
     })
-    }
-    
+    } 
 }
     

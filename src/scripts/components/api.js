@@ -22,9 +22,6 @@ export const getUserInfo = () => {
         headers: config.headers,
     })
     .then(getResponse)
-    // .then((data) => {
-    //     console.log( data); // Выводим данные в консоль
-    //   })
 }
 
 // Загрузка карточек с сервера (GET)
@@ -34,9 +31,6 @@ export const getInitialCardsRequest = () => {
         headers: config.headers,
     })
     .then(getResponse)
-    // .then((data) => {
-    //     console.log( data); // Выводим данные в консоль
-    //   })
 }
 
 // Редактирование профиля (PATCH)
@@ -51,7 +45,6 @@ export const updateProfileInfo = (data) => {
 
 // Добавление новой карточки (POST)
 export const createNewCard = (cardData) => {
-    console.log(cardData);
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
         headers: config.headers,
@@ -70,7 +63,7 @@ export const updateAvatar = (avatarLink) => {
       })
     })
     .then(getResponse);
-};
+}
 
 // Постановка/удаление лайка
 export const putLikeAPI = (cardId) => {
