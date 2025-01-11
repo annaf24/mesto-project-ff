@@ -161,6 +161,7 @@ profileImage.addEventListener('click', () => {
 
 // Обработчик отправки новой аватврки
 function handleAvatarSubmit(evt) {
+    loading.start(evt.submitter);
     evt.preventDefault();
     const avatarUrl = avatarUrlInput.value;
     updateAvatar(avatarUrl)
@@ -169,7 +170,10 @@ function handleAvatarSubmit(evt) {
         editAvatarForm.reset();
         closeModal(popupEditAvatar);
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
+    .finally (() => {
+        loading.stop(evt.submitter)}
+    );
 }
 
 Promise.all([getUserInfo(), getInitialCardsRequest()])
